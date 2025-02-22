@@ -9,9 +9,29 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://avatars.mds.yandex.net/get-shedevrum/11917197/img_7ab0558d02f411efbfbc0a6d81cb79fd/orig') no-repeat center center;
+            background-size: cover;
+            filter: blur(8px);
+            z-index: -1;
         }
         .container {
             margin-top: 50px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
         }
         .hamster {
             width: 150px;
@@ -28,6 +48,7 @@
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
         }
         .upgrade:disabled {
             background-color: #ccc;
@@ -35,6 +56,7 @@
     </style>
 </head>
 <body>
+    <div class="background"></div>
     <div class="container">
         <h1>Hamster Kombat Tap</h1>
         <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
@@ -48,10 +70,24 @@
     </div>
     
     <script>
-        // Загрузка сохраненных данных из localStorage, если они есть
-        let score = parseInt(localStorage.getItem("score")) || 0;
-        let clickValue = parseInt(localStorage.getItem("clickValue")) || 1;
-        let passiveIncome = parseInt(localStorage.getItem("passiveIncome")) || 0;
+        // Функция загрузки сохраненных данных
+        function loadData() {
+            return {
+                score: parseInt(localStorage.getItem("score")) || 0,
+                clickValue: parseInt(localStorage.getItem("clickValue")) || 1,
+                passiveIncome: parseInt(localStorage.getItem("passiveIncome")) || 0
+            };
+        }
+
+        // Функция сохранения данных
+        function saveData() {
+            localStorage.setItem("score", score);
+            localStorage.setItem("clickValue", clickValue);
+            localStorage.setItem("passiveIncome", passiveIncome);
+        }
+
+        // Загружаем сохраненные данные
+        let { score, clickValue, passiveIncome } = loadData();
 
         const hamster = document.getElementById("hamster");
         const scoreDisplay = document.getElementById("score");
@@ -60,44 +96,49 @@
         const upgradeClick = document.getElementById("upgrade-click");
         const upgradePassive = document.getElementById("upgrade-passive");
 
-        // Обновление значений на экране
-        scoreDisplay.textContent = score;
-        clickValueDisplay.textContent = clickValue;
-        passiveIncomeDisplay.textContent = passiveIncome;
+        // Обновляем отображение данных
+        function updateDisplay() {
+            scoreDisplay.textContent = score;
+            clickValueDisplay.textContent = clickValue;
+            passiveIncomeDisplay.textContent = passiveIncome;
+        }
 
+        // Клик по хомяку
         hamster.addEventListener("click", () => {
             score += clickValue;
-            scoreDisplay.textContent = score;
-            localStorage.setItem("score", score); // Сохраняем очки
+            updateDisplay();
+            saveData();
         });
 
+        // Улучшение клика
         upgradeClick.addEventListener("click", () => {
             if (score >= 10) {
                 score -= 10;
                 clickValue++;
-                scoreDisplay.textContent = score;
-                clickValueDisplay.textContent = clickValue;
-                localStorage.setItem("score", score); // Сохраняем очки
-                localStorage.setItem("clickValue", clickValue); // Сохраняем улучшения
+                updateDisplay();
+                saveData();
             }
         });
 
+        // Покупка пассивного дохода
         upgradePassive.addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
                 passiveIncome++;
-                scoreDisplay.textContent = score;
-                passiveIncomeDisplay.textContent = passiveIncome;
-                localStorage.setItem("score", score); // Сохраняем очки
-                localStorage.setItem("passiveIncome", passiveIncome); // Сохраняем пассивный доход
+                updateDisplay();
+                saveData();
             }
         });
 
+        // Пассивный доход каждую секунду
         setInterval(() => {
             score += passiveIncome;
-            scoreDisplay.textContent = score;
-            localStorage.setItem("score", score); // Сохраняем очки
+            updateDisplay();
+            saveData();
         }, 1000);
+
+        // Обновляем данные при загрузке страницы
+        updateDisplay();
     </script>
 </body>
 </html>
