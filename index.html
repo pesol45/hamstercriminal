@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тап Тап Хомяк</title>
+    <title>Hamster Kombat Tap</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: rgba(0, 0, 0, 0.5);
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -21,7 +21,7 @@
             height: 100%;
             background: url('https://avatars.mds.yandex.net/get-shedevrum/11917197/img_7ab0558d02f411efbfbc0a6d81cb79fd/orig') no-repeat center center;
             background-size: cover;
-            filter: blur(8px);
+            opacity: 0.3;
             z-index: -1;
         }
         .container {
@@ -30,52 +30,84 @@
             z-index: 1;
             padding: 20px;
             display: inline-block;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
         }
         .hamster {
             width: 150px;
             cursor: pointer;
         }
-        #score, #click-value, #passive-income {
-            font-size: 24px;
-            margin-top: 10px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        p {
+            font-size: 28px;
+            font-weight: bold;
+            color: black;
+            text-shadow: none;
         }
-        .upgrade {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: rgba(0, 140, 186, 0.8);
+        .menu-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .menu-button {
+            padding: 10px 20px;
+            background-color: black;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
-            display: block;
-            width: 200px;
-            margin: 10px auto;
             font-size: 18px;
+            border-radius: 5px;
             transition: background-color 0.3s;
         }
-        .upgrade:hover {
-            background-color: rgba(0, 140, 186, 1);
+        .menu-button:hover {
+            background-color: gray;
         }
-        .upgrade:disabled {
-            background-color: rgba(200, 200, 200, 0.6);
-            cursor: not-allowed;
+        .upgrades {
+            display: none;
+            width: 250px;
+            height: 400px;
+            margin: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .upgrade-button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: gold;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="background"></div>
-    <div class="container">
+    <div class="container" id="mainMenu">
         <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
         <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
-        <p style="color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">Кликай на хомяка, чтобы заработать очки!</p>
         <p>Очки: <span id="score">0</span></p>
         <p>Очки за клик: <span id="click-value">1</span></p>
         <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
-        
-        <button class="upgrade" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
-        <button class="upgrade" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
+    </div>
+    
+    <div class="upgrades" id="upgradeMenu">
+        <h2 style="color: white;">Улучшения</h2>
+        <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
+        <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
+    </div>
+    
+    <div class="menu-bar">
+        <button class="menu-button" onclick="showMenu('mainMenu')">Главная</button>
+        <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
     </div>
     
     <script>
@@ -137,6 +169,12 @@
             updateDisplay();
             saveData();
         }, 1000);
+
+        function showMenu(menuId) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('upgradeMenu').style.display = 'none';
+            document.getElementById(menuId).style.display = 'block';
+        }
 
         updateDisplay();
     </script>
