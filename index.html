@@ -48,9 +48,10 @@
     </div>
     
     <script>
-        let score = 0;
-        let clickValue = 1;
-        let passiveIncome = 0;
+        // Загрузка сохраненных данных из localStorage, если они есть
+        let score = parseInt(localStorage.getItem("score")) || 0;
+        let clickValue = parseInt(localStorage.getItem("clickValue")) || 1;
+        let passiveIncome = parseInt(localStorage.getItem("passiveIncome")) || 0;
 
         const hamster = document.getElementById("hamster");
         const scoreDisplay = document.getElementById("score");
@@ -59,9 +60,15 @@
         const upgradeClick = document.getElementById("upgrade-click");
         const upgradePassive = document.getElementById("upgrade-passive");
 
+        // Обновление значений на экране
+        scoreDisplay.textContent = score;
+        clickValueDisplay.textContent = clickValue;
+        passiveIncomeDisplay.textContent = passiveIncome;
+
         hamster.addEventListener("click", () => {
             score += clickValue;
             scoreDisplay.textContent = score;
+            localStorage.setItem("score", score); // Сохраняем очки
         });
 
         upgradeClick.addEventListener("click", () => {
@@ -70,6 +77,8 @@
                 clickValue++;
                 scoreDisplay.textContent = score;
                 clickValueDisplay.textContent = clickValue;
+                localStorage.setItem("score", score); // Сохраняем очки
+                localStorage.setItem("clickValue", clickValue); // Сохраняем улучшения
             }
         });
 
@@ -79,12 +88,15 @@
                 passiveIncome++;
                 scoreDisplay.textContent = score;
                 passiveIncomeDisplay.textContent = passiveIncome;
+                localStorage.setItem("score", score); // Сохраняем очки
+                localStorage.setItem("passiveIncome", passiveIncome); // Сохраняем пассивный доход
             }
         });
 
         setInterval(() => {
             score += passiveIncome;
             scoreDisplay.textContent = score;
+            localStorage.setItem("score", score); // Сохраняем очки
         }, 1000);
     </script>
 </body>
