@@ -35,6 +35,7 @@
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
+            max-width: 90%;
         }
         .hamster {
             width: 150px;
@@ -48,6 +49,7 @@
             font-size: 28px;
             font-weight: bold;
             color: white;
+            margin: 10px 0;
         }
         .stats-bar {
             position: fixed;
@@ -58,6 +60,7 @@
             justify-content: center;
             gap: 10px;
             top: 0;
+            flex-wrap: wrap;
         }
         .menu-bar {
             position: fixed;
@@ -69,6 +72,7 @@
             display: flex;
             justify-content: center;
             transition: bottom 0.5s ease-in-out;
+            gap: 10px;
         }
         .menu-button, .upgrade-button {
             padding: 10px 20px;
@@ -76,6 +80,7 @@
             cursor: pointer;
             font-size: 18px;
             border-radius: 5px;
+            min-width: 120px;
         }
         .menu-button { background-color: black; color: white; }
         .menu-button:hover { background-color: gray; }
@@ -102,12 +107,56 @@
             width: 30px;
             top: -50px;
             animation: fall linear 1s;
-            will-change: transform, opacity; /* Оптимизация для анимации */
+            will-change: transform, opacity;
         }
         @keyframes fall {
             to {
                 transform: translateY(100vh);
-                opacity: 0; /* Плавное исчезновение */
+                opacity: 0;
+            }
+        }
+
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 600px) {
+            .hamster {
+                width: 100px;
+            }
+            p {
+                font-size: 20px;
+            }
+            .menu-button, .upgrade-button, .toggle-panel-button {
+                font-size: 16px;
+                padding: 8px 16px;
+                min-width: 100px;
+            }
+            .stats-bar {
+                gap: 5px;
+                padding: 5px 0;
+            }
+            .menu-bar {
+                gap: 5px;
+            }
+        }
+
+        /* Предупреждение для вертикальной ориентации */
+        .orientation-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            font-size: 24px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1000;
+        }
+        @media (orientation: portrait) and (max-width: 600px) {
+            .orientation-warning {
+                display: flex;
             }
         }
     </style>
@@ -133,6 +182,12 @@
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
     </div>
     <button class="toggle-panel-button" id="toggleButton" onclick="togglePanel()">Показать меню</button>
+
+    <!-- Предупреждение для вертикальной ориентации -->
+    <div class="orientation-warning">
+        Пожалуйста, переверните устройство в горизонтальную ориентацию для лучшего опыта!
+    </div>
+
     <script>
         let score = parseInt(localStorage.getItem("score")) || 0;
         let clickValue = parseInt(localStorage.getItem("clickValue")) || 1;
@@ -156,7 +211,7 @@
             const hamster = document.createElement("img");
             hamster.src = "https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png";
             hamster.classList.add("falling-hamster");
-            hamster.style.left = `${Math.random() * 100}%`; // Случайное положение по горизонтали
+            hamster.style.left = `${Math.random() * 100}%`;
             document.body.appendChild(hamster);
 
             // Удаление хомяка после завершения анимации
@@ -168,7 +223,7 @@
         document.getElementById("hamster").addEventListener("click", () => {
             score += clickValue;
             updateDisplay();
-            createFallingHamster(); // Создаем одного падающего хомяка при клике
+            createFallingHamster();
         });
 
         document.getElementById("upgrade-click").addEventListener("click", () => {
