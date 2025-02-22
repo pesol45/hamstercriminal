@@ -36,9 +36,10 @@
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
             max-width: 90%;
+            margin-bottom: 20px;
         }
         .hamster {
-            width: 150px;
+            width: 300px; /* Увеличен в 2 раза */
             cursor: pointer;
             transition: transform 0.1s;
         }
@@ -64,47 +65,45 @@
         }
         .menu-bar {
             position: fixed;
-            bottom: -100px;
+            bottom: 0;
             left: 0;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            padding: 10px 0;
+            padding: 20px 0; /* Увеличен отступ */
             display: flex;
             justify-content: center;
-            transition: bottom 0.5s ease-in-out;
-            gap: 10px;
+            gap: 20px; /* Увеличен зазор между кнопками */
         }
         .menu-button, .upgrade-button {
-            padding: 10px 20px;
+            padding: 15px 30px; /* Увеличен размер кнопок */
             border: none;
             cursor: pointer;
-            font-size: 18px;
-            border-radius: 5px;
-            min-width: 120px;
+            font-size: 24px; /* Увеличен размер текста */
+            border-radius: 10px;
+            min-width: 150px; /* Увеличен минимальный размер */
         }
         .menu-button { background-color: black; color: white; }
         .menu-button:hover { background-color: gray; }
         .upgrade-button { background-color: gold; color: black; display: block; margin: 10px auto; }
         .toggle-panel-button {
             position: fixed;
-            bottom: 10px;
+            bottom: 80px; /* Поднят выше */
             left: 50%;
             transform: translateX(-50%);
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: blue;
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 18px;
-            border-radius: 5px;
-            transition: bottom 0.5s ease-in-out;
+            font-size: 24px;
+            border-radius: 10px;
         }
         .hidden { display: none; }
 
         /* Стили для падающих хомяков */
         .falling-hamster {
             position: absolute;
-            width: 30px;
+            width: 60px; /* Увеличен в 2 раза */
             top: -50px;
             animation: fall linear 1s;
             will-change: transform, opacity;
@@ -119,44 +118,23 @@
         /* Адаптивные стили для мобильных устройств */
         @media (max-width: 600px) {
             .hamster {
-                width: 100px;
+                width: 200px; /* Уменьшен для мобильных */
             }
             p {
                 font-size: 20px;
             }
             .menu-button, .upgrade-button, .toggle-panel-button {
-                font-size: 16px;
-                padding: 8px 16px;
-                min-width: 100px;
+                font-size: 18px;
+                padding: 10px 20px;
+                min-width: 120px;
             }
             .stats-bar {
                 gap: 5px;
                 padding: 5px 0;
             }
             .menu-bar {
-                gap: 5px;
-            }
-        }
-
-        /* Предупреждение для вертикальной ориентации */
-        .orientation-warning {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            font-size: 24px;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            z-index: 1000;
-        }
-        @media (orientation: portrait) and (max-width: 600px) {
-            .orientation-warning {
-                display: flex;
+                gap: 10px;
+                padding: 10px 0;
             }
         }
     </style>
@@ -182,11 +160,6 @@
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
     </div>
     <button class="toggle-panel-button" id="toggleButton" onclick="togglePanel()">Показать меню</button>
-
-    <!-- Предупреждение для вертикальной ориентации -->
-    <div class="orientation-warning">
-        Пожалуйста, переверните устройство в горизонтальную ориентацию для лучшего опыта!
-    </div>
 
     <script>
         let score = parseInt(localStorage.getItem("score")) || 0;
@@ -251,7 +224,7 @@
             const panel = document.getElementById("menuBar");
             const button = document.getElementById("toggleButton");
             panel.style.bottom = panel.style.bottom === "0px" ? "-100px" : "0px";
-            button.style.bottom = panel.style.bottom === "0px" ? "61px" : "10px";
+            button.style.bottom = panel.style.bottom === "0px" ? "80px" : "10px";
         }
 
         function showMenu(menuId) {
