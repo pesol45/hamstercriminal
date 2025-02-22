@@ -39,6 +39,10 @@
         .hamster {
             width: 150px;
             cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .hamster:active {
+            transform: scale(0.95);
         }
         p {
             font-size: 28px;
@@ -91,6 +95,21 @@
             transition: bottom 0.5s ease-in-out;
         }
         .hidden { display: none; }
+
+        /* Стили для падающих хомяков */
+        .falling-hamster {
+            position: absolute;
+            width: 30px;
+            top: -50px;
+            animation: fall linear 1s;
+            will-change: transform, opacity; /* Оптимизация для анимации */
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0; /* Плавное исчезновение */
+            }
+        }
     </style>
 </head>
 <body>
@@ -132,9 +151,24 @@
             localStorage.setItem("lastVisit", Date.now());
         }
 
+        // Функция для создания одного падающего хомяка
+        function createFallingHamster() {
+            const hamster = document.createElement("img");
+            hamster.src = "https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png";
+            hamster.classList.add("falling-hamster");
+            hamster.style.left = `${Math.random() * 100}%`; // Случайное положение по горизонтали
+            document.body.appendChild(hamster);
+
+            // Удаление хомяка после завершения анимации
+            hamster.addEventListener("animationend", () => {
+                hamster.remove();
+            }, { once: true });
+        }
+
         document.getElementById("hamster").addEventListener("click", () => {
             score += clickValue;
             updateDisplay();
+            createFallingHamster(); // Создаем одного падающего хомяка при клике
         });
 
         document.getElementById("upgrade-click").addEventListener("click", () => {
