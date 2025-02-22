@@ -37,7 +37,7 @@
 <body>
     <div class="container">
         <h1>Hamster Kombat Tap</h1>
-        <img src="https://via.placeholder.com/150" alt="Hamster" class="hamster" id="hamster">
+        <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
         <p>Кликай на хомяка, чтобы заработать очки!</p>
         <p>Очки: <span id="score">0</span></p>
         <p>Очки за клик: <span id="click-value">1</span></p>
@@ -51,19 +51,19 @@
         let score = 0;
         let clickValue = 1;
         let passiveIncome = 0;
-        
+
         const hamster = document.getElementById("hamster");
         const scoreDisplay = document.getElementById("score");
         const clickValueDisplay = document.getElementById("click-value");
         const passiveIncomeDisplay = document.getElementById("passive-income");
         const upgradeClick = document.getElementById("upgrade-click");
         const upgradePassive = document.getElementById("upgrade-passive");
-        
+
         hamster.addEventListener("click", () => {
             score += clickValue;
             scoreDisplay.textContent = score;
         });
-        
+
         upgradeClick.addEventListener("click", () => {
             if (score >= 10) {
                 score -= 10;
@@ -72,7 +72,7 @@
                 clickValueDisplay.textContent = clickValue;
             }
         });
-        
+
         upgradePassive.addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
@@ -81,7 +81,7 @@
                 passiveIncomeDisplay.textContent = passiveIncome;
             }
         });
-        
+
         setInterval(() => {
             score += passiveIncome;
             scoreDisplay.textContent = score;
