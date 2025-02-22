@@ -41,10 +41,10 @@
         .hamster {
             width: 300px; /* Увеличен в 2 раза */
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.1s ease; /* Плавное изменение масштаба */
         }
         .hamster:active {
-            transform: scale(0.95);
+            transform: scale(0.95); /* Уменьшение при нажатии */
         }
         p {
             font-size: 28px;
