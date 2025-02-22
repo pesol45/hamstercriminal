@@ -12,6 +12,11 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
         .background {
             position: fixed;
@@ -25,11 +30,9 @@
             z-index: -1;
         }
         .container {
-            margin-top: 50px;
             position: relative;
             z-index: 1;
             padding: 20px;
-            display: inline-block;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
         }
@@ -40,140 +43,132 @@
         p {
             font-size: 28px;
             font-weight: bold;
-            color: black;
-            text-shadow: none;
+            color: white;
         }
-        .menu-bar {
+        .stats-bar {
             position: fixed;
-            bottom: 0;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             padding: 10px 0;
             display: flex;
             justify-content: center;
             gap: 10px;
+            top: 0;
         }
-        .menu-button {
+        .menu-bar {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            transition: bottom 0.5s ease-in-out;
+        }
+        .menu-button, .upgrade-button {
             padding: 10px 20px;
-            background-color: black;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .menu-button { background-color: black; color: white; }
+        .menu-button:hover { background-color: gray; }
+        .upgrade-button { background-color: gold; color: black; display: block; margin: 10px auto; }
+        .toggle-panel-button {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: blue;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 18px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: bottom 0.5s ease-in-out;
         }
-        .menu-button:hover {
-            background-color: gray;
-        }
-        .upgrades {
-            display: none;
-            width: 250px;
-            height: 400px;
-            margin: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .upgrade-button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            background-color: gold;
-            color: black;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            border-radius: 5px;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="background"></div>
-    <div class="container" id="mainMenu">
-        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
-        <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
+    <div class="stats-bar">
         <p>Очки: <span id="score">0</span></p>
         <p>Очки за клик: <span id="click-value">1</span></p>
         <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
     </div>
-    
-    <div class="upgrades" id="upgradeMenu">
+    <div class="container" id="mainMenu">
+        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
+        <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
+    </div>
+    <div class="container hidden" id="upgradeMenu">
         <h2 style="color: white;">Улучшения</h2>
         <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
         <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
     </div>
-    
-    <div class="menu-bar">
+    <div class="menu-bar" id="menuBar">
         <button class="menu-button" onclick="showMenu('mainMenu')">Главная</button>
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
     </div>
-    
+    <button class="toggle-panel-button" id="toggleButton" onclick="togglePanel()">Показать меню</button>
     <script>
-        function loadData() {
-            return {
-                score: parseInt(localStorage.getItem("score")) || 0,
-                clickValue: parseInt(localStorage.getItem("clickValue")) || 1,
-                passiveIncome: parseInt(localStorage.getItem("passiveIncome")) || 0
-            };
-        }
+        let score = parseInt(localStorage.getItem("score")) || 0;
+        let clickValue = parseInt(localStorage.getItem("clickValue")) || 1;
+        let passiveIncome = parseInt(localStorage.getItem("passiveIncome")) || 0;
+        let lastVisit = parseInt(localStorage.getItem("lastVisit")) || Date.now();
+        let elapsedSeconds = Math.floor((Date.now() - lastVisit) / 1000);
+        score += elapsedSeconds * passiveIncome;
 
-        function saveData() {
+        function updateDisplay() {
+            document.getElementById("score").textContent = score;
+            document.getElementById("click-value").textContent = clickValue;
+            document.getElementById("passive-income").textContent = passiveIncome;
             localStorage.setItem("score", score);
             localStorage.setItem("clickValue", clickValue);
             localStorage.setItem("passiveIncome", passiveIncome);
+            localStorage.setItem("lastVisit", Date.now());
         }
 
-        let { score, clickValue, passiveIncome } = loadData();
-
-        const hamster = document.getElementById("hamster");
-        const scoreDisplay = document.getElementById("score");
-        const clickValueDisplay = document.getElementById("click-value");
-        const passiveIncomeDisplay = document.getElementById("passive-income");
-        const upgradeClick = document.getElementById("upgrade-click");
-        const upgradePassive = document.getElementById("upgrade-passive");
-
-        function updateDisplay() {
-            scoreDisplay.textContent = score;
-            clickValueDisplay.textContent = clickValue;
-            passiveIncomeDisplay.textContent = passiveIncome;
-        }
-
-        hamster.addEventListener("click", () => {
+        document.getElementById("hamster").addEventListener("click", () => {
             score += clickValue;
             updateDisplay();
-            saveData();
         });
 
-        upgradeClick.addEventListener("click", () => {
+        document.getElementById("upgrade-click").addEventListener("click", () => {
             if (score >= 10) {
                 score -= 10;
                 clickValue++;
                 updateDisplay();
-                saveData();
             }
         });
 
-        upgradePassive.addEventListener("click", () => {
+        document.getElementById("upgrade-passive").addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
                 passiveIncome++;
                 updateDisplay();
-                saveData();
             }
         });
 
         setInterval(() => {
             score += passiveIncome;
             updateDisplay();
-            saveData();
         }, 1000);
 
+        function togglePanel() {
+            const panel = document.getElementById("menuBar");
+            const button = document.getElementById("toggleButton");
+            panel.style.bottom = panel.style.bottom === "0px" ? "-100px" : "0px";
+            button.style.bottom = panel.style.bottom === "0px" ? "61px" : "10px";
+        }
+
         function showMenu(menuId) {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('upgradeMenu').style.display = 'none';
-            document.getElementById(menuId).style.display = 'block';
+            document.getElementById("mainMenu").classList.add("hidden");
+            document.getElementById("upgradeMenu").classList.add("hidden");
+            document.getElementById(menuId).classList.remove("hidden");
         }
 
         updateDisplay();
