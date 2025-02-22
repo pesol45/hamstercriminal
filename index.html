@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamster Kombat Tap</title>
+    <title>Тап Тап Хомяк</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,9 +28,7 @@
             margin-top: 50px;
             position: relative;
             z-index: 1;
-            background: rgba(255, 255, 255, 0.8);
             padding: 20px;
-            border-radius: 10px;
             display: inline-block;
         }
         .hamster {
@@ -40,27 +38,38 @@
         #score, #click-value, #passive-income {
             font-size: 24px;
             margin-top: 10px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
         .upgrade {
             margin-top: 10px;
             padding: 10px;
-            background-color: #008CBA;
+            background-color: rgba(0, 140, 186, 0.8);
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            display: block;
+            width: 200px;
+            margin: 10px auto;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        .upgrade:hover {
+            background-color: rgba(0, 140, 186, 1);
         }
         .upgrade:disabled {
-            background-color: #ccc;
+            background-color: rgba(200, 200, 200, 0.6);
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <div class="background"></div>
     <div class="container">
-        <h1>Hamster Kombat Tap</h1>
+        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
         <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
-        <p>Кликай на хомяка, чтобы заработать очки!</p>
+        <p style="color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">Кликай на хомяка, чтобы заработать очки!</p>
         <p>Очки: <span id="score">0</span></p>
         <p>Очки за клик: <span id="click-value">1</span></p>
         <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
@@ -70,7 +79,6 @@
     </div>
     
     <script>
-        // Функция загрузки сохраненных данных
         function loadData() {
             return {
                 score: parseInt(localStorage.getItem("score")) || 0,
@@ -79,14 +87,12 @@
             };
         }
 
-        // Функция сохранения данных
         function saveData() {
             localStorage.setItem("score", score);
             localStorage.setItem("clickValue", clickValue);
             localStorage.setItem("passiveIncome", passiveIncome);
         }
 
-        // Загружаем сохраненные данные
         let { score, clickValue, passiveIncome } = loadData();
 
         const hamster = document.getElementById("hamster");
@@ -96,21 +102,18 @@
         const upgradeClick = document.getElementById("upgrade-click");
         const upgradePassive = document.getElementById("upgrade-passive");
 
-        // Обновляем отображение данных
         function updateDisplay() {
             scoreDisplay.textContent = score;
             clickValueDisplay.textContent = clickValue;
             passiveIncomeDisplay.textContent = passiveIncome;
         }
 
-        // Клик по хомяку
         hamster.addEventListener("click", () => {
             score += clickValue;
             updateDisplay();
             saveData();
         });
 
-        // Улучшение клика
         upgradeClick.addEventListener("click", () => {
             if (score >= 10) {
                 score -= 10;
@@ -120,7 +123,6 @@
             }
         });
 
-        // Покупка пассивного дохода
         upgradePassive.addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
@@ -130,14 +132,12 @@
             }
         });
 
-        // Пассивный доход каждую секунду
         setInterval(() => {
             score += passiveIncome;
             updateDisplay();
             saveData();
         }, 1000);
 
-        // Обновляем данные при загрузке страницы
         updateDisplay();
     </script>
 </body>
