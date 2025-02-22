@@ -39,12 +39,12 @@
             margin-bottom: 20px;
         }
         .hamster {
-            width: 300px; /* Увеличен в 2 раза */
+            width: 200px; /* Увеличен в 2 раза */
             cursor: pointer;
             transition: transform 0.1s ease; /* Плавное изменение масштаба */
         }
         .hamster:active {
-            transform: scale(0.95); /* Уменьшение при нажатии */
+ transform: scale(0.95); /* Уменьшение при нажатии */
         }
         p {
             font-size: 28px;
@@ -54,9 +54,9 @@
         }
         .stats-bar {
             position: fixed;
-            width: 100%;
+            width: 90%;
             background-color: rgba(0, 0, 0, 0.8);
-            padding: 10px 0;
+            padding: 15px 0;
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -69,7 +69,7 @@
             left: 0;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            padding: 20px 0; /* Увеличен отступ */
+            padding: 15px 0; /* Увеличен отступ */
             display: flex;
             justify-content: center;
             gap: 20px; /* Увеличен зазор между кнопками */
@@ -78,7 +78,7 @@
             padding: 15px 30px; /* Увеличен размер кнопок */
             border: none;
             cursor: pointer;
-            font-size: 24px; /* Увеличен размер текста */
+            font-size: 25px; /* Увеличен размер текста */
             border-radius: 10px;
             min-width: 150px; /* Увеличен минимальный размер */
         }
@@ -87,11 +87,11 @@
         .upgrade-button { background-color: gold; color: black; display: block; margin: 10px auto; }
         .toggle-panel-button {
             position: fixed;
-            bottom: 80px; /* Поднят выше */
+            bottom: 88px; /* Поднят выше */
             left: 50%;
             transform: translateX(-50%);
             padding: 15px 30px;
-            background-color: blue;
+            background-color: yellow;
             color: white;
             border: none;
             cursor: pointer;
@@ -116,25 +116,25 @@
         }
 
         /* Адаптивные стили для мобильных устройств */
-        @media (max-width: 600px) {
+        @media (max-width: 500px) {
             .hamster {
-                width: 200px; /* Уменьшен для мобильных */
+                width: 150px; /* Уменьшен для мобильных */
             }
             p {
-                font-size: 20px;
+                font-size: 18px;
             }
             .menu-button, .upgrade-button, .toggle-panel-button {
-                font-size: 18px;
-                padding: 10px 20px;
-                min-width: 120px;
+                font-size: 15px;
+                padding: 15px 25px;
+                min-width: 150px;
             }
             .stats-bar {
-                gap: 5px;
-                padding: 5px 0;
+                gap: 1px;
+                padding: 1px 0;
             }
             .menu-bar {
-                gap: 10px;
-                padding: 10px 0;
+                gap: 66px;
+                padding: 66px 0;
             }
         }
     </style>
@@ -147,14 +147,14 @@
         <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
     </div>
     <div class="container" id="mainMenu">
-        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
+        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Тап Тап хомячка</h1>
         <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
     </div>
     <div class="container hidden" id="upgradeMenu">
-        <h2 style="color: white;">Улучшения</h2>
-        <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
-        <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
-    </div>
+    <h2 style="color: white;">Улучшения</h2>
+    <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
+    <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
+   </div>
     <div class="menu-bar" id="menuBar">
         <button class="menu-button" onclick="showMenu('mainMenu')">Главная</button>
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
@@ -206,7 +206,6 @@
                 updateDisplay();
             }
         });
-
         document.getElementById("upgrade-passive").addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
@@ -224,7 +223,7 @@
             const panel = document.getElementById("menuBar");
             const button = document.getElementById("toggleButton");
             panel.style.bottom = panel.style.bottom === "0px" ? "-100px" : "0px";
-            button.style.bottom = panel.style.bottom === "0px" ? "80px" : "10px";
+            button.style.bottom = panel.style.bottom === "0px" ? "89px" : "0px";
         }
 
         function showMenu(menuId) {
