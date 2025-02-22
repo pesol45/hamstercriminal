@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Kombat Tap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .hamster {
+            width: 150px;
+            cursor: pointer;
+        }
+        #score, #click-value, #passive-income {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .upgrade {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .upgrade:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hamster Kombat Tap</h1>
+        <img src="https://via.placeholder.com/150" alt="Hamster" class="hamster" id="hamster">
+        <p>Кликай на хомяка, чтобы заработать очки!</p>
+        <p>Очки: <span id="score">0</span></p>
+        <p>Очки за клик: <span id="click-value">1</span></p>
+        <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
+        
+        <button class="upgrade" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
+        <button class="upgrade" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
+    </div>
+    
+    <script>
+        let score = 0;
+        let clickValue = 1;
+        let passiveIncome = 0;
+        
+        const hamster = document.getElementById("hamster");
+        const scoreDisplay = document.getElementById("score");
+        const clickValueDisplay = document.getElementById("click-value");
+        const passiveIncomeDisplay = document.getElementById("passive-income");
+        const upgradeClick = document.getElementById("upgrade-click");
+        const upgradePassive = document.getElementById("upgrade-passive");
+        
+        hamster.addEventListener("click", () => {
+            score += clickValue;
+            scoreDisplay.textContent = score;
+        });
+        
+        upgradeClick.addEventListener("click", () => {
+            if (score >= 10) {
+                score -= 10;
+                clickValue++;
+                scoreDisplay.textContent = score;
+                clickValueDisplay.textContent = clickValue;
+            }
+        });
+        
+        upgradePassive.addEventListener("click", () => {
+            if (score >= 50) {
+                score -= 50;
+                passiveIncome++;
+                scoreDisplay.textContent = score;
+                passiveIncomeDisplay.textContent = passiveIncome;
+            }
+        });
+        
+        setInterval(() => {
+            score += passiveIncome;
+            scoreDisplay.textContent = score;
+        }, 1000);
+    </script>
+</body>
+</html>
