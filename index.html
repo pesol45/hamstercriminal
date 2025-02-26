@@ -62,6 +62,17 @@
 button, a, .clickable-element {
     -webkit-tap-highlight-color: transparent;
 }
+      .shop-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.shop-item img {
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
         .menu-bar {
             position: fixed;
             bottom: -100px;
@@ -169,9 +180,16 @@ button, a, .clickable-element {
         <p>$Krml за клик: <span id="click-value">1</span></p>
         <p>Пассивный доход: <span id="passive-income">0</span> $Krml в секунду</p>
     </div>
-  <div class="container hidden" id="magazMenu">
+ <div class="container hidden" id="magazMenu">
     <h2 style="color: white;">Магазин</h2>
-    <p>В разработке...</p>
+    <div>
+        <h3 style="color: white;">Скины для хомяка</h3>
+        <div id="skins-container" class="upgrade-row"></div>
+    </div>
+    <div>
+        <h3 style="color: white;">Фоны</h3>
+        <div id="backgrounds-container" class="upgrade-row"></div>
+    </div>
 </div>
     <div class="container" id="mainMenu">
         <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Тапать монетку</h1>
@@ -234,7 +252,21 @@ button, a, .clickable-element {
         let lastVisit = parseInt(localStorage.getItem("lastVisit")) || Date.now();
         let elapsedSeconds = Math.floor((Date.now() - lastVisit) / 1000);
         score += elapsedSeconds * passiveIncome;
+          const skins = [
+    { id: "default", name: "Обычный хомяк", price: 0, image: "https://i.imgur.com/VPkPPzf.png" },
+    { id: "gold", name: "Золотой хомяк", price: 5000, image: "https://images.apteka.ru/original_70b3c73b-9c07-40b1-b3a7-9809f597e0da.jpeg" },
+    { id: "ninja", name: "Хомяк-ниндзя", price: 10000, image: "https://multi-admin.ru/mediabank_blog/11/258922/1046c5a8cfd1e4022d9e60bd9222692fsnimok-ekrana-2024-11-27-110918.jpg" }
+];
 
+const backgrounds = [
+    { id: "default", name: "Обычный фон", price: 0, image: "https://avatars.mds.yandex.net/get-shedevrum/11917197/img_7ab0558d02f411efbfbc0a6d81cb79fd/orig" },
+    { id: "space", name: "Космос", price: 7000, image: "https://www.gctc.ru/media/images/education/general/cosmos_1.jpg" },
+    { id: "forest", name: "Лес", price: 10000, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMTIB_lAcv8_itguNaAIOdfNjXMRFTSaxA6g&s" }
+];
+
+let currentSkin = "default";
+let currentBackground = "default";
+     
         function updateDisplay() {
     document.getElementById("score").textContent = formatNumber(score);
     document.getElementById("click-value").textContent = formatNumber(clickValue);
@@ -545,6 +577,106 @@ function addPlayerToLeaderboard() {
         showLeaderboard(); // Обновляем таблицу лидеров
     }
 }
+          function buySkin(skin) {
+    if (score >= skin.price) {
+        score -= skin.price;
+        currentSkin = skin.id;
+        document.getElementById("hamster").src = skin.image;
+        updateDisplay();
+        alert(`Вы купили скин: ${skin.name}`);
+        savePreferences(); // Сохраняем выбор
+    } else {
+        alert("Недостаточно очков!");
+    }
+}
+
+function buyBackground(background) {
+    if (score >= background.price) {
+        score -= background.price;
+        currentBackground = background.id;
+        document.querySelector(".background").style.backgroundImage = `url('${background.image}')`;
+        updateDisplay();
+        alert(`Вы купили фон: ${background.name}`);
+        savePreferences(); // Сохраняем выбор
+    } else {
+        alert("Недостаточно очков!");
+    }
+}
+      function renderShop() {
+    const skinsContainer = document.getElementById("skins-container");
+    const backgroundsContainer = document.getElementById("backgrounds-container");
+
+    // Очищаем контейнеры
+    skinsContainer.innerHTML = "";
+    backgroundsContainer.innerHTML = "";
+
+    // Отображаем скины
+    skins.forEach(skin => {
+        const skinDiv = document.createElement("div");
+        skinDiv.className = "shop-item";
+
+        const skinImage = document.createElement("img");
+        skinImage.src = skin.image;
+        skinImage.style.width = "100px"; // Размер изображения
+        skinImage.style.height = "100px";
+        skinImage.alt = skin.name;
+
+        const skinButton = document.createElement("button");
+        skinButton.className = "upgrade-button";
+        skinButton.innerHTML = `${skin.name} - ${skin.price} $Krml`;
+        skinButton.onclick = () => buySkin(skin);
+
+        skinDiv.appendChild(skinImage);
+        skinDiv.appendChild(skinButton);
+        skinsContainer.appendChild(skinDiv);
+    });
+
+    // Отображаем фоны
+    backgrounds.forEach(background => {
+        const backgroundDiv = document.createElement("div");
+        backgroundDiv.className = "shop-item";
+
+        const backgroundImage = document.createElement("img");
+        backgroundImage.src = background.image;
+        backgroundImage.style.width = "100px"; // Размер изображения
+        backgroundImage.style.height = "100px";
+        backgroundImage.alt = background.name;
+
+        const backgroundButton = document.createElement("button");
+        backgroundButton.className = "upgrade-button";
+        backgroundButton.innerHTML = `${background.name} - ${background.price} $Krml`;
+        backgroundButton.onclick = () => buyBackground(background);
+
+        backgroundDiv.appendChild(backgroundImage);
+        backgroundDiv.appendChild(backgroundButton);
+        backgroundsContainer.appendChild(backgroundDiv);
+    });
+}
+          function savePreferences() {
+    localStorage.setItem("currentSkin", currentSkin);
+    localStorage.setItem("currentBackground", currentBackground);
+}
+function loadPreferences() {
+    currentSkin = localStorage.getItem("currentSkin") || "default";
+    currentBackground = localStorage.getItem("currentBackground") || "default";
+
+    // Применяем сохранённые скин и фон
+    const selectedSkin = skins.find(skin => skin.id === currentSkin);
+    const selectedBackground = backgrounds.find(background => background.id === currentBackground);
+
+    if (selectedSkin) {
+        document.getElementById("hamster").src = selectedSkin.image;
+    }
+    if (selectedBackground) {
+        document.querySelector(".background").style.backgroundImage = `url('${selectedBackground.image}')`;
+    }
+}
+
+// Загружаем предпочтения при запуске
+window.onload = () => {
+    loadPreferences();
+    updateDisplay();
+};
 
 // Функция для выдачи монет (пример)
 function giveCoins() {
@@ -558,14 +690,6 @@ function giveCoins() {
         alert("Некорректное число!");
     }
 }
-        function showMenu(menuId) {
-            document.getElementById("mainMenu").classList.add("hidden");
-            document.getElementById("upgradeMenu").classList.add("hidden");
-            document.getElementById("profilMenu").classList.add("hidden")
-            document.getElementById("liderMenu").classList.add("hidden")
-            document.getElementById("magazMenu").classList.add("hidden")
-            document.getElementById(menuId).classList.remove("hidden");
-        }
           let inputBuffer = ""; // Буфер ввода
 const secretCode = "сигма"; // Тайное слово
 const adminPassword = "сигма"; // Пароль для входа в админ-меню
@@ -603,6 +727,11 @@ document.addEventListener("keydown", function (event) {
         } else {
             console.error('Элемент save-score-button не найден');
         }
+    }
+
+    // Если открывается магазин, обновляем его
+    if (menuId === "magazMenu") {
+        renderShop();
     }
 }
 
