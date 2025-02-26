@@ -258,7 +258,20 @@ function closeAdminMenu() {
         document.getElementById("hamster").addEventListener("click", () => {
     score += clickValue;
     updateDisplay();
-    createFallingHamster(); // Добавляем вызов функции
+    createFallingHamster();
+          console.log("Клик по хомяку!"); // Проверка, что обработчик срабатывает
+    let hamster = event.target;
+    let rect = hamster.getBoundingClientRect();
+    let centerX = rect.left + rect.width / 2;
+    let centerY = rect.top + rect.height / 2;
+    let deltaX = event.clientX - centerX;
+    let deltaY = event.clientY - centerY;
+    let angleX = (deltaY / rect.height) * 150;
+    let angleY = (deltaX / rect.width) * -150;
+    hamster.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+    setTimeout(() => {
+        hamster.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }, 200);
 });
 
 
@@ -482,32 +495,6 @@ function openAdminMenu() {
 }
         updateDisplay();
     </script>
-  <script>
-        // Добавляем обработчик событий для клика по изображению хомяка
-        document.getElementById("hamster").addEventListener("click", (event) => {
-            let hamster = event.target; // Получаем элемент, на который кликнули
-            let rect = hamster.getBoundingClientRect(); // Получаем размеры и позицию элемента
-            
-            // Определяем центр изображения
-            let centerX = rect.left + rect.width / 2;
-            let centerY = rect.top + rect.height / 2;
-            
-            // Вычисляем разницу между точкой клика и центром изображения
-            let deltaX = event.clientX - centerX;
-            let deltaY = event.clientY - centerY;
-            
-            // Рассчитываем угол наклона в зависимости от направления клика
-            let angleX = (deltaY / rect.height) * 150; // Наклон по оси X
-            let angleY = (deltaX / rect.width) * -150; // Наклон по оси Y (отрицательный, чтобы сохранять естественное движение)
-            
-            // Применяем эффект наклона к изображению
-            hamster.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-            
-            // Через 200 мс возвращаем изображение в исходное положение
-            setTimeout(() => {
-                hamster.style.transform = "rotateX(0deg) rotateY(0deg)";
-            }, 200);
-        });
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"> </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"> </script>
 </body>
 </html>
