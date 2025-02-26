@@ -51,7 +51,7 @@
         .stats-bar {
            position: fixed;
            top: 0;
-           width: 95%;
+           width: 99%;
            background-color: rgba(0, 0, 0, 0.5);
            padding: 2px 0;  /* Уменьшаем высоту панели */
            display: flex;
@@ -72,6 +72,7 @@ button, a, .clickable-element {
             display: flex;
             justify-content: center;
             transition: bottom 0.5s ease-in-out;
+          
         }
 .upgrade-row {
     display: flex;
@@ -83,6 +84,10 @@ button, a, .clickable-element {
     font-size: 15px;
     padding: 10px 15px;
     width: 200px;
+}
+      .upgrade-button:hover {
+    transform: translateX(2px) translateY(2px);
+    transition: transform 0.1s ease;
 }
       .upgrade-button {
     font-size: 10px; /* Увеличиваем шрифт */
@@ -112,6 +117,10 @@ button, a, .clickable-element {
             font-size: 15px;
             border-radius: 15px;
       }
+      .menu-button:hover {
+    transform: translateX(2px) translateY(2px);
+    transition: transform 0.1s ease;
+}
     .profil-button{
     padding: 10px 10px;
             border: none;
@@ -372,7 +381,7 @@ function formatNumber(num) {
         { value: 1_000_000_000_000_000_000_000_000_000, suffix: "Oc" },
         { value: 1_000_000_000_000_000_000_000_000, suffix: "Sp" },
         { value: 1_000_000_000_000_000_000_000, suffix: "Sx" },
-        { value: 1_000_000_000_000_000_000, suffix: "Qt" },
+        { value: 1_000_000_000_000_000_000, suffix: "Qn" },
         { value: 1_000_000_000_000_000, suffix: "Qd" },
         { value: 1_000_000_000_000, suffix: "T" },
         { value: 1_000_000_000, suffix: "B" },
