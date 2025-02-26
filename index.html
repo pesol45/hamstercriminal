@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 1);
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -35,108 +35,98 @@
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
-            max-width: 90%;
-            margin-bottom: 20px;
         }
         .hamster {
-            width: 200px; /* Увеличен в 2 раза */
+            width: 150px;
             cursor: pointer;
-            transition: transform 0.1s ease; /* Плавное изменение масштаба */
-        }
-        .hamster:active {
- transform: scale(0.95); /* Уменьшение при нажатии */
         }
         p {
-            font-size: 28px;
+            font-size: 20px;
             font-weight: bold;
             color: white;
-            margin: 10px 0;
         }
         .stats-bar {
-            position: fixed;
-            width: 90%;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 15px 0;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            top: 0;
-            flex-wrap: wrap;
-        }
+           position: fixed;
+           top: 0;
+           width: 70%;
+           background-color: rgba(0, 0, 0, 0.8);
+           padding: 5px 0;  /* Уменьшаем высоту панели */
+           display: flex;
+           justify-content: center;
+           gap: 10px;
+           border-radius: 10px 10px 0 0; /* Закругляем верхние углы */
+}
+button, a, .clickable-element {
+    -webkit-tap-highlight-color: transparent;
+}
         .menu-bar {
             position: fixed;
-            bottom: 0;
+            bottom: -100px;
             left: 0;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            padding: 15px 0; /* Увеличен отступ */
+            padding: 10px 0;
             display: flex;
             justify-content: center;
-            gap: 20px; /* Увеличен зазор между кнопками */
+            transition: bottom 0.5s ease-in-out;
         }
-        .menu-button, .upgrade-button {
-            padding: 15px 30px; /* Увеличен размер кнопок */
+.upgrade-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+      .buy-max {
+    font-size: 15px;
+    padding: 10px 15px;
+    width: 200px;
+}
+      .upgrade-button {
+    font-size: 10px; /* Увеличиваем шрифт */
+    padding: 10px 20px; /* Увеличиваем отступы */
+    width: 100%; /* Растягиваем кнопки */
+    max-width: 200px; /* Ограничиваем максимальную ширину */
+}
+.upgrade-button {
+    flex-grow: 1; /* Кнопки улучшений занимают все доступное место */
+}
+
+.buy-max {
+    flex-grow: 0;
+    width: 333px; /* Фиксированная ширина для кнопок "Купить максимум" */
+}
+ .upgrade-button {
+            padding: 5px 10px;
             border: none;
             cursor: pointer;
-            font-size: 25px; /* Увеличен размер текста */
-            border-radius: 10px;
-            min-width: 150px; /* Увеличен минимальный размер */
+            font-size: 15px;
+            border-radius: 15px;
+        }
+  .menu-button {
+            padding: 10px 60px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 15px;
         }
         .menu-button { background-color: black; color: white; }
-        .menu-button:hover { background-color: gray; }
+        .menu-button:hover { background-color: grey; }
         .upgrade-button { background-color: gold; color: black; display: block; margin: 10px auto; }
         .toggle-panel-button {
             position: fixed;
-            bottom: 88px; /* Поднят выше */
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 30px;
-            background-color: yellow;
+            padding: 10px 20px;
+            background-color: blue;
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 24px;
-            border-radius: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: bottom 0.5s ease-in-out;
         }
         .hidden { display: none; }
-
-        /* Стили для падающих хомяков */
-        .falling-hamster {
-            position: absolute;
-            width: 60px; /* Увеличен в 2 раза */
-            top: -50px;
-            animation: fall linear 1s;
-            will-change: transform, opacity;
-        }
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        /* Адаптивные стили для мобильных устройств */
-        @media (max-width: 500px) {
-            .hamster {
-                width: 150px; /* Уменьшен для мобильных */
-            }
-            p {
-                font-size: 18px;
-            }
-            .menu-button, .upgrade-button, .toggle-panel-button {
-                font-size: 15px;
-                padding: 15px 25px;
-                min-width: 150px;
-            }
-            .stats-bar {
-                gap: 1px;
-                padding: 1px 0;
-            }
-            .menu-bar {
-                gap: 66px;
-                padding: 66px 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -147,21 +137,41 @@
         <p>Пассивный доход: <span id="passive-income">0</span> очков в секунду</p>
     </div>
     <div class="container" id="mainMenu">
-        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Тап Тап хомячка</h1>
+        <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Hamster Kombat Tap</h1>
         <img src="https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png" alt="Hamster" class="hamster" id="hamster">
     </div>
-    <div class="container hidden" id="upgradeMenu">
+  <div id="adminMenu" class="hidden" style="
+    position: fixed; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%);
+    background-color: black; 
+    color: white; 
+    padding: 20px; 
+    border-radius: 10px; 
+    text-align: center;
+    z-index: 99999">
+    <h2>Админ-меню</h2>
+    <p>Добро пожаловать, Админ!</p>
+    <button onclick="giveCoins()" style="padding: 10px; font-size: 16px; margin-bottom: 10px;">Выдать монеты</button>
+    <button onclick="closeAdminMenu()" style="padding: 10px; font-size: 16px;">Закрыть</button>
+</div>
+    <div class="container hidden upgrade-menu" id="upgradeMenu">
     <h2 style="color: white;">Улучшения</h2>
-    <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
-    <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
-   </div>
+    <div class="upgrade-row">
+        <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
+        <button class="upgrade-button buy-max" id="buy-maxclick">Купить максимум</button>
+    </div>
+    <div class="upgrade-row">
+        <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
+        <button class="upgrade-button buy-max" id="buy-maxpass">Купить максимум</button>
+    </div>
+</div>
     <div class="menu-bar" id="menuBar">
         <button class="menu-button" onclick="showMenu('mainMenu')">Главная</button>
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
     </div>
     <button class="toggle-panel-button" id="toggleButton" onclick="togglePanel()">Показать меню</button>
-
-    <script>
+        <script>
         let score = parseInt(localStorage.getItem("score")) || 0;
         let clickValue = parseInt(localStorage.getItem("clickValue")) || 1;
         let passiveIncome = parseInt(localStorage.getItem("passiveIncome")) || 0;
@@ -170,33 +180,33 @@
         score += elapsedSeconds * passiveIncome;
 
         function updateDisplay() {
-            document.getElementById("score").textContent = score;
-            document.getElementById("click-value").textContent = clickValue;
-            document.getElementById("passive-income").textContent = passiveIncome;
-            localStorage.setItem("score", score);
-            localStorage.setItem("clickValue", clickValue);
-            localStorage.setItem("passiveIncome", passiveIncome);
-            localStorage.setItem("lastVisit", Date.now());
-        }
-
-        // Функция для создания одного падающего хомяка
-        function createFallingHamster() {
-            const hamster = document.createElement("img");
-            hamster.src = "https://46tv.ru/uploads/posts/2024-07/1721374745_hamster-kombat.png";
-            hamster.classList.add("falling-hamster");
-            hamster.style.left = `${Math.random() * 100}%`;
-            document.body.appendChild(hamster);
-
-            // Удаление хомяка после завершения анимации
-            hamster.addEventListener("animationend", () => {
-                hamster.remove();
-            }, { once: true });
-        }
-
+    document.getElementById("score").textContent = formatNumber(score);
+    document.getElementById("click-value").textContent = formatNumber(clickValue);
+    document.getElementById("passive-income").textContent = formatNumber(passiveIncome);
+    
+    localStorage.setItem("score", score);
+    localStorage.setItem("clickValue", clickValue);
+    localStorage.setItem("passiveIncome", passiveIncome);
+    localStorage.setItem("lastVisit", Date.now());
+}
+          function giveCoins() {
+    let amount = prompt("Введите количество монет:");
+    amount = parseInt(amount);
+    
+    if (!isNaN(amount) && amount > 0) {
+        score += amount;
+        updateDisplay(); // Обновляем баланс на экране
+        alert(`Выдано ${amount} монет!`);
+    } else {
+        alert("Некорректное число!");
+    }
+}
+function closeAdminMenu() {
+    document.getElementById("adminMenu").classList.add("hidden");
+}
         document.getElementById("hamster").addEventListener("click", () => {
             score += clickValue;
             updateDisplay();
-            createFallingHamster();
         });
 
         document.getElementById("upgrade-click").addEventListener("click", () => {
@@ -206,6 +216,22 @@
                 updateDisplay();
             }
         });
+
+        document.getElementById("buy-maxclick").addEventListener("click", () => {
+    let maxUpgrades = Math.floor(score / 10); // Сколько раз можно купить улучшение
+    score -= maxUpgrades * 10; // Вычитаем стоимость всех покупок
+    clickValue += maxUpgrades; // Добавляем улучшения клика
+    updateDisplay();
+});
+
+document.getElementById("buy-maxpass").addEventListener("click", () => {
+    let maxUpgrades = Math.floor(score / 50); // Сколько раз можно купить пассивный доход
+    score -= maxUpgrades * 50; // Вычитаем стоимость всех покупок
+    passiveIncome += maxUpgrades; // Добавляем улучшения пассивного дохода
+    updateDisplay();
+});
+
+
         document.getElementById("upgrade-passive").addEventListener("click", () => {
             if (score >= 50) {
                 score -= 50;
@@ -223,15 +249,55 @@
             const panel = document.getElementById("menuBar");
             const button = document.getElementById("toggleButton");
             panel.style.bottom = panel.style.bottom === "0px" ? "-100px" : "0px";
-            button.style.bottom = panel.style.bottom === "0px" ? "89px" : "0px";
+            button.style.bottom = panel.style.bottom === "0px" ? "61px" : "0px";
         }
-
+function formatNumber(num) {
+    if (num >= 1_000_000_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "UDe";
+    if (num >= 1_000_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "De";
+    if (num >= 1_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "No";
+    if (num >= 1_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000).toFixed(2) + "Oc";
+    if (num >= 1_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000).toFixed(2) + "Sp";
+    if (num >= 1_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000).toFixed(2) + "Sx";
+    if (num >= 1_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000).toFixed(2) + "Qt";
+    if (num >= 1_000_000_000_000_000) return (num / 1_000_000_000_000_000).toFixed(2) + "Qd";
+    if (num >= 1_000_000_000_000) return (num / 1_000_000_000_000).toFixed(2) + "T";
+    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(2) + "B";
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(2) + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(2) + "K";
+    return num.toString();
+}
         function showMenu(menuId) {
             document.getElementById("mainMenu").classList.add("hidden");
             document.getElementById("upgradeMenu").classList.add("hidden");
             document.getElementById(menuId).classList.remove("hidden");
         }
+          let inputBuffer = ""; // Буфер ввода
+const secretCode = "сигма"; // Тайное слово
+const adminPassword = "сигма"; // Пароль для входа в админ-меню
 
+document.addEventListener("keydown", function (event) {
+    inputBuffer += event.key.toLowerCase(); // Добавляем введённый символ
+    inputBuffer = inputBuffer.slice(-secretCode.length); // Ограничиваем длину
+
+    if (inputBuffer === secretCode) {
+        showAdminLogin(); // Показываем окно ввода пароля
+        inputBuffer = ""; // Очищаем буфер
+    }
+});
+
+function showAdminLogin() {
+    let password = prompt("Введите пароль администратора:");
+    if (password === adminPassword) {
+        openAdminMenu();
+    } else {
+        alert("Неверный пароль!");
+    }
+}
+
+function openAdminMenu() {
+    document.getElementById("adminMenu").classList.remove("hidden");
+    alert("Добро пожаловать в админ-меню!");
+}
         updateDisplay();
     </script>
 </body>
