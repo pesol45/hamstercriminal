@@ -73,7 +73,7 @@ button, a, .clickable-element {
     border-radius: 20px;
     margin-bottom: 20px;
 }
-        .menu-bar {
+       .menu-bar {
             position: fixed;
             bottom: -100px;
             left: 0;
@@ -83,7 +83,7 @@ button, a, .clickable-element {
             display: flex;
             justify-content: center;
             transition: bottom 0.5s ease-in-out;
-          
+          z-index: 100;
         }
 .upgrade-row {
     display: flex;
@@ -112,19 +112,105 @@ button, a, .clickable-element {
 #achievements-list {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 5px; /* Уменьшаем расстояние между достижениями */
+    max-height: 300px; /* Ограничиваем высоту контейнера */
+    overflow-y: auto; /* Добавляем вертикальную прокрутку */
+    padding: 10px;
+}
+      @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+      #custom-notification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+        animation: fadeIn 0.3s ease-in-out;
 }
 
+#custom-notification.hidden {
+    display: none;
+}
+
+.notification-content {
+    background-color: #1c1b1b;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 300px;
+}
+
+.notification-content h2 {
+    color: gold;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.notification-content p {
+    color: white;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.notification-content button {
+    background-color: gold;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.notification-content button:hover {
+    background-color: #ffcc00;
+}
 .achievement {
-    padding: -10px;
+    padding: 8px;
     border: 1px solid gold;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
+    font-size: 14px;
 }
 
 .achievement.unlocked {
     border-color: green;
+}
+
+.achievement h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.achievement p {
+    margin: 5px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #444;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: gold;
+    border-radius: 5px;
+}
+
+.progress-fill.unlocked {
+    background-color: green;
 }
 .buy-max {
     flex-grow: 0;
@@ -230,6 +316,13 @@ button, a, .clickable-element {
     <button onclick="giveCoins()" style="padding: 10px; font-size: 16px; margin-bottom: 10px;">Выдать монеты</button>
     <button onclick="closeAdminMenu()" style="padding: 10px; font-size: 16px;">Закрыть</button>
 </div>
+  <div id="custom-notification" class="hidden">
+    <div class="notification-content">
+        <h2>Достижение разблокировано!</h2>
+        <p id="notification-message"></p>
+        <button onclick="closeNotification()">Закрыть</button>
+    </div>
+</div>
     <div class="container hidden upgrade-menu" id="upgradeMenu">
     <h2 style="color: white;">Улучшения</h2>
     <div class="upgrade-row">
@@ -328,47 +421,79 @@ let currentBackground = "default";
 let totalUpgrades = 0; // Счётчик улучшений
 
 function checkAchievements() {
+    let updated = false;
+
     achievements.forEach(achievement => {
         if (!achievement.unlocked) {
-            let conditionMet = false;
+            let previousProgress = achievement.progress;
 
-            // Проверяем условие для каждого достижения
+            // Обновляем прогресс для каждого достижения
             switch (achievement.id) {
                 case "novice":
                 case "magnate":
-                    conditionMet = score >= achievement.goal;
+                    achievement.progress = Math.min(score, achievement.goal);
                     break;
                 case "clicker-pro":
-                    conditionMet = totalClicks >= achievement.goal;
+                    achievement.progress = Math.min(totalClicks, achievement.goal);
                     break;
                 case "upgrade-master":
-                    conditionMet = totalUpgrades >= achievement.goal;
+                    achievement.progress = Math.min(totalUpgrades, achievement.goal);
                     break;
                 case "passive-income":
-                    conditionMet = passiveIncome >= achievement.goal;
+                    achievement.progress = Math.min(passiveIncome, achievement.goal);
                     break;
             }
 
-            // Если условие выполнено, разблокируем достижение
-            if (conditionMet) {
+            // Если прогресс изменился, обновляем интерфейс
+            if (achievement.progress !== previousProgress) {
+                updated = true;
+            }
+
+            // Если прогресс достиг цели, разблокируем достижение
+            if (achievement.progress >= achievement.goal) {
                 achievement.unlocked = true;
-                alert(`Достижение разблокировано: ${achievement.name}\n${achievement.description}`);
+                showNotification(`Достижение: ${achievement.name}\n${achievement.description}`); // Используем кастомное уведомление
+                updated = true;
             }
         }
     });
+
+    // Если были изменения, перерисовываем интерфейс
+    if (updated) {
+        showAchievements();
+    }
 }
-          function showAchievements() {
+function showAchievements() {
     const achievementsList = document.getElementById("achievements-list");
     achievementsList.innerHTML = "";
 
     achievements.forEach(achievement => {
         const achievementDiv = document.createElement("div");
         achievementDiv.className = `achievement ${achievement.unlocked ? "unlocked" : ""}`;
+        
+        // Добавляем прогресс-бар
+        const progressBar = document.createElement("div");
+        progressBar.style.width = "100%";
+        progressBar.style.height = "10px";
+        progressBar.style.backgroundColor = "#444";
+        progressBar.style.borderRadius = "5px";
+        progressBar.style.marginTop = "5px";
+
+        const progressFill = document.createElement("div");
+        progressFill.style.width = `${(achievement.progress / achievement.goal) * 100}%`;
+        progressFill.style.height = "100%";
+        progressFill.style.backgroundColor = achievement.unlocked ? "green" : "gold";
+        progressFill.style.borderRadius = "5px";
+
+        progressBar.appendChild(progressFill);
+
         achievementDiv.innerHTML = `
             <h3>${achievement.name}</h3>
             <p>${achievement.description}</p>
+            <p>Прогресс: ${achievement.progress} / ${achievement.goal}</p>
             <p>Статус: ${achievement.unlocked ? "Разблокировано" : "Заблокировано"}</p>
         `;
+        achievementDiv.appendChild(progressBar);
         achievementsList.appendChild(achievementDiv);
     });
 }
@@ -385,6 +510,20 @@ function checkAchievements() {
 
     // Проверяем достижения
     checkAchievements();
+}
+          // Функция для отображения уведомления
+function showNotification(message) {
+    const notification = document.getElementById("custom-notification");
+    const notificationMessage = document.getElementById("notification-message");
+
+    notificationMessage.textContent = message; // Устанавливаем текст уведомления
+    notification.classList.remove("hidden"); // Показываем уведомление
+}
+
+// Функция для скрытия уведомления
+function closeNotification() {
+    const notification = document.getElementById("custom-notification");
+    notification.classList.add("hidden"); // Скрываем уведомление
 }
 function createFallingHamster() {
             const hamster = document.createElement("img");
@@ -434,12 +573,13 @@ function closeAdminMenu() {
 });
 
 
-       document.getElementById("upgrade-click").addEventListener("click", () => {
+      document.getElementById("upgrade-click").addEventListener("click", () => {
     if (score >= 10) {
         score -= 10;
         clickValue++;
-        totalUpgrades++; // Увеличиваем счётчик улучшений
+        totalUpgrades++;
         updateDisplay();
+        checkAchievements(); // Обновляем прогресс
     }
 });
 
@@ -447,8 +587,9 @@ document.getElementById("upgrade-passive").addEventListener("click", () => {
     if (score >= 50) {
         score -= 50;
         passiveIncome++;
-        totalUpgrades++; // Увеличиваем счётчик улучшений
+        totalUpgrades++;
         updateDisplay();
+        checkAchievements(); // Обновляем прогресс
     }
 });
 
@@ -688,7 +829,7 @@ function addPlayerToLeaderboard() {
         showLeaderboard(); // Обновляем таблицу лидеров
     }
 }
-          function buySkin(skin) {
+function buySkin(skin) {
     if (score >= skin.price) {
         score -= skin.price;
         currentSkin = skin.id;
@@ -767,7 +908,8 @@ function buyBackground(background) {
     localStorage.setItem("currentSkin", currentSkin);
     localStorage.setItem("currentBackground", currentBackground);
 }
-function loadPreferences() {
+          function loadPreferences() {
+    // Загружаем сохранённые значения из localStorage
     currentSkin = localStorage.getItem("currentSkin") || "default";
     currentBackground = localStorage.getItem("currentBackground") || "default";
 
@@ -782,11 +924,32 @@ function loadPreferences() {
         document.querySelector(".background").style.backgroundImage = `url('${selectedBackground.image}')`;
     }
 }
+function savePreferences() {
+    localStorage.setItem("currentSkin", currentSkin);
+    localStorage.setItem("currentBackground", currentBackground);
+    console.log("Сохранено в localStorage:", { currentSkin, currentBackground });
+}
 
-// Загружаем предпочтения при запуске
+function loadPreferences() {
+    currentSkin = localStorage.getItem("currentSkin") || "default";
+    currentBackground = localStorage.getItem("currentBackground") || "default";
+    console.log("Загружено из localStorage:", { currentSkin, currentBackground });
+
+    // Применяем сохранённые скин и фон
+    const selectedSkin = skins.find(skin => skin.id === currentSkin);
+    const selectedBackground = backgrounds.find(background => background.id === currentBackground);
+
+    if (selectedSkin) {
+        document.getElementById("hamster").src = selectedSkin.image;
+    }
+    if (selectedBackground) {
+        document.querySelector(".background").style.backgroundImage = `url('${selectedBackground.image}')`;
+    }
+}
+
 window.onload = () => {
-    loadPreferences();
-    updateDisplay();
+    loadPreferences(); // Загружаем сохранённые настройки
+    updateDisplay(); // Обновляем отображение
 };
 
 // Функция для выдачи монет (пример)
@@ -815,7 +978,7 @@ document.addEventListener("keydown", function (event) {
     }
 });
   function showMenu(menuId) {
-    const menus = ["mainMenu", "upgradeMenu", "magazMenu", "liderMenu", "profilMenu"];
+    const menus = ["mainMenu", "upgradeMenu", "magazMenu", "liderMenu", "profilMenu", "achievementsMenu"];
     menus.forEach((id) => {
         const menu = document.getElementById(id);
         if (menu) {
