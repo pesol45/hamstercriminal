@@ -160,6 +160,10 @@ button, a, .clickable-element {
         <p>$Krml за клик: <span id="click-value">1</span></p>
         <p>Пассивный доход: <span id="passive-income">0</span> $Krml в секунду</p>
     </div>
+  <div class="container hidden" id="magazMenu">
+    <h2 style="color: white;">Магазин</h2>
+    <p>В разработке...</p>
+</div>
     <div class="container" id="mainMenu">
         <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Тапать монетку</h1>
         <img src="https://i.imgur.com/VPkPPzf.png" alt="Hamster" class="hamster" id="hamster">
@@ -184,30 +188,34 @@ button, a, .clickable-element {
     <div class="upgrade-row">
         <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
         <button class="upgrade-button buy-max" id="buy-maxclick">Купить максимум</button>
-    </div>
+      </div>
     <div class="upgrade-row">
         <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
         <button class="upgrade-button buy-max" id="buy-maxpass">Купить максимум</button>
-    </div>
+      </div>
+    <div class="upgrade-row">
+      <button class="upgrade-button" id="upgrade-doubleclick">x2 клик - 100 очков</button>
+        <button class="upgrade-button" id="upgrade-doublepassive">х2 пассивный доход - 500 очков</button>
+      </div>
 </div>
     <div class="menu-bar" id="menuBar">
         <button class="menu-button" onclick="showMenu('mainMenu')">Главная</button>
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
+        <button class="menu-button" onclick="showMenu('magazMenu')">Магазин</button>
+        <button class="menu-button" onclick="showMenu('liderMenu')">Таблица Лидеров</button>
         <button class="menu-button" onclick="showMenu('profilMenu')">Профиль</button>
     </div>
+  <div class="container hidden" id="liderMenu">
+    <h2 style="color: white;">Таблица Лидеров</h2>
+    <button id="save-score-button" style="margin-bottom: 20px;">Сохранить результат</button>
+    <!-- Таблица будет отображаться здесь -->
+</div>
    <div class="container hidden profil-menu" id="profilMenu">
     <h2 style="color: white;">Профиль</h2>
     <div class="upgrade-row">
-        <button class="upgrade-button" id="upgrade-click">Улучшить клик (+1) - 10 очков</button>
-        <button class="upgrade-button buy-max" id="buy-maxclick">Купить максимум</button>
+        <button class="upgrade-button" id="delete-data-button" style="background-color: red;">Удалить все данные(не работает потому что я не знаю как это сделать если вы знаете писать тг:@bebra556)</button>
     </div>
-    <div class="upgrade-row">
-        <button class="upgrade-button" id="upgrade-passive">Купить пассивный доход (+1/с) - 50 очков</button>
-        <button class="upgrade-button buy-max" id="buy-maxpass">Купить максимум</button>
-    </div>
-    <div class="upgrade-row">
-        <button class="upgrade-button" id="delete-data-button" style="background-color: red;">Удалить все данные</button>
-    </div>
+     
 </div>
     <button class="toggle-panel-button" id="toggleButton" onclick="togglePanel()">Показать меню</button>
         <script>
@@ -291,32 +299,35 @@ function closeAdminMenu() {
 });
 document.getElementById("delete-data-button").addEventListener("click", () => {
     let confirmation = confirm("Вы уверены, что хотите удалить все данные?");
-    console.log("Пользователь подтвердил удаление данных:", confirmation);
     if (confirmation) {
-        console.log("Очищаем localStorage...");
-        localStorage.clear();
-        
-        // Печатаем состояние localStorage после очистки
-        console.log("Данные из localStorage после очистки:", localStorage);
-
-        // Дополнительная проверка
-        if (localStorage.length === 0) {
-            console.log("localStorage успешно очищен!");
-        } else {
-            console.log("Ошибка: localStorage не очищен.");
-        }
-
+        localStorage.clear(); // Очищаем localStorage
         alert("Данные успешно удалены. Страница будет перезагружена.");
-        
-        // Перезагрузка страницы через 500 мс, чтобы убедиться, что очистка завершена
         setTimeout(() => {
-            location.reload();
+            location.reload(); // Перезагружаем страницу
         }, 500);
+    }
+});
+// Обработчик для кнопки "x2 клик"
+document.getElementById("upgrade-doubleclick").addEventListener("click", () => {
+    if (score >= 100) {
+        score -= 100;
+        clickValue *= 2; // Увеличиваем клик в 2 раза
+        updateDisplay();
     } else {
-        console.log("Удаление данных отменено.");
+        alert("Недостаточно очков!");
     }
 });
 
+// Обработчик для кнопки "x2 пассивный доход"
+document.getElementById("upgrade-doublepassive").addEventListener("click", () => {
+    if (score >= 500) {
+        score -= 500;
+        passiveIncome *= 2; // Увеличиваем пассивный доход в 2 раза
+        updateDisplay();
+    } else {
+        alert("Недостаточно очков!");
+    }
+});
 
 
 document.getElementById("buy-maxpass").addEventListener("click", () => {
@@ -347,18 +358,34 @@ document.getElementById("buy-maxpass").addEventListener("click", () => {
             button.style.bottom = panel.style.bottom === "0px" ? "51px" : "0px";
         }
 function formatNumber(num) {
-    if (num >= 1_000_000_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "UDe";
-    if (num >= 1_000_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "De";
-    if (num >= 1_000_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000_000).toFixed(2) + "No";
-    if (num >= 1_000_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000_000).toFixed(2) + "Oc";
-    if (num >= 1_000_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000_000).toFixed(2) + "Sp";
-    if (num >= 1_000_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000_000).toFixed(2) + "Sx";
-    if (num >= 1_000_000_000_000_000_000) return (num / 1_000_000_000_000_000_000).toFixed(2) + "Qt";
-    if (num >= 1_000_000_000_000_000) return (num / 1_000_000_000_000_000).toFixed(2) + "Qd";
-    if (num >= 1_000_000_000_000) return (num / 1_000_000_000_000).toFixed(2) + "T";
-    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(2) + "B";
-    if (num >= 1_000_000) return (num / 1_000_000).toFixed(2) + "M";
-    if (num >= 1_000) return (num / 1_000).toFixed(2) + "K";
+    const suffixes = [
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "OcDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "SpDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "SxDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "QnDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "QdDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "TDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "DDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "UDe" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000, suffix: "De" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000, suffix: "No" },
+        { value: 1_000_000_000_000_000_000_000_000_000, suffix: "Oc" },
+        { value: 1_000_000_000_000_000_000_000_000, suffix: "Sp" },
+        { value: 1_000_000_000_000_000_000_000, suffix: "Sx" },
+        { value: 1_000_000_000_000_000_000, suffix: "Qt" },
+        { value: 1_000_000_000_000_000, suffix: "Qd" },
+        { value: 1_000_000_000_000, suffix: "T" },
+        { value: 1_000_000_000, suffix: "B" },
+        { value: 1_000_000, suffix: "M" },
+        { value: 1_000, suffix: "K" }
+    ];
+
+    for (const { value, suffix } of suffixes) {
+        if (num >= value) {
+            return (num / value).toFixed(2) + suffix;
+        }
+    }
+
     return num.toString();
 }
           let isDrawing = false; // Флаг для отслеживания начала рисования
@@ -381,6 +408,7 @@ document.addEventListener("touchmove", (event) => {
         points.push({ x: currentX, y: currentY }); // Записываем текущие координаты
     }
 });
+          
 
 document.addEventListener("touchend", () => {
     if (isDrawing && points.length > 10) { // Проверяем, что жест достаточно длинный
@@ -442,10 +470,71 @@ function detectCircleGesture(points) {
 function openAdminMenu() {
     document.getElementById("adminMenu").classList.remove("hidden");
 }
+ function addPlayerToLeaderboard() {
+    const name = prompt("Введите ваше имя:");
+    if (name) {
+        savePlayerScore(name, score);
+        showLeaderboard(); // Обновляем таблицу лидеров
+    }
+}
 
 // Функция для закрытия админ-меню
 function closeAdminMenu() {
     document.getElementById("adminMenu").classList.add("hidden");
+}
+// Функция для сохранения результата игрока
+function savePlayerScore(name, score) {
+    const players = JSON.parse(localStorage.getItem("players")) || [];
+    players.push({ name, score });
+    players.sort((a, b) => b.score - a.score); // Сортируем по убыванию очков
+    localStorage.setItem("players", JSON.stringify(players));
+}
+
+// Функция для отображения таблицы лидеров
+function showLeaderboard() {
+    const players = JSON.parse(localStorage.getItem("players")) || [];
+    const leaderboard = document.getElementById("liderMenu");
+
+    // Очищаем содержимое таблицы
+    leaderboard.innerHTML = "<h2 style='color: white;'>Таблица Лидеров</h2>";
+
+    if (players.length === 0) {
+        leaderboard.innerHTML += "<p style='color: white;'>В разработке...</p>";
+        return;
+    }
+
+    // Создаем таблицу
+    const table = document.createElement("table");
+    table.style.width = "100%";
+    table.style.color = "white";
+    table.style.borderCollapse = "collapse";
+    table.innerHTML = `
+        <tr>
+            <th style="border: 1px solid white; padding: 10px;">Имя</th>
+            <th style="border: 1px solid white; padding: 10px;">Очки</th>
+        </tr>
+    `;
+
+    // Добавляем строки с данными игроков
+    players.forEach((player, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td style="border: 1px solid white; padding: 10px;">${player.name}</td>
+            <td style="border: 1px solid white; padding: 10px;">${player.score}</td>
+        `;
+        table.appendChild(row);
+    });
+
+    leaderboard.appendChild(table);
+}
+
+// Функция для добавления игрока
+function addPlayerToLeaderboard() {
+    const name = prompt("Введите ваше имя:");
+    if (name) {
+        savePlayerScore(name, score);
+        showLeaderboard(); // Обновляем таблицу лидеров
+    }
 }
 
 // Функция для выдачи монет (пример)
@@ -464,6 +553,8 @@ function giveCoins() {
             document.getElementById("mainMenu").classList.add("hidden");
             document.getElementById("upgradeMenu").classList.add("hidden");
             document.getElementById("profilMenu").classList.add("hidden")
+            document.getElementById("liderMenu").classList.add("hidden")
+            document.getElementById("magazMenu").classList.add("hidden")
             document.getElementById(menuId).classList.remove("hidden");
         }
           let inputBuffer = ""; // Буфер ввода
@@ -479,6 +570,32 @@ document.addEventListener("keydown", function (event) {
         inputBuffer = ""; // Очищаем буфер
     }
 });
+  function showMenu(menuId) {
+    const menus = ["mainMenu", "upgradeMenu", "magazMenu", "liderMenu", "profilMenu"];
+    menus.forEach((id) => {
+        const menu = document.getElementById(id);
+        if (menu) {
+            menu.classList.add("hidden");
+        }
+    });
+
+    const selectedMenu = document.getElementById(menuId);
+    if (selectedMenu) {
+        selectedMenu.classList.remove("hidden");
+    }
+
+    // Если открывается таблица лидеров, обновляем её
+    if (menuId === "liderMenu") {
+        showLeaderboard();
+
+        const saveButton = document.getElementById('save-score-button');
+        if (saveButton) {
+            saveButton.addEventListener('click', addPlayerToLeaderboard);
+        } else {
+            console.error('Элемент save-score-button не найден');
+        }
+    }
+}
 
 function showAdminLogin() {
     let password = prompt("Введите пароль администратора:");
