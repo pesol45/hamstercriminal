@@ -41,16 +41,13 @@
             cursor: pointer;
           border-radius: 10px 10px 0 0;
           transition: transform 0.2s ease-out;
--webkit-tap-highlight-color: transparent;
+          -webkit-tap-highlight-color: transparent;
         }
         p {
             font-size: 20px;
             font-weight: bold;
             color: white;
         }
-button, a, .clickable-element {
-    -webkit-tap-highlight-color: transparent;
-}
         .stats-bar {
            position: fixed;
            top: 0;
@@ -62,7 +59,9 @@ button, a, .clickable-element {
            gap: 10px;
            border-radius: 10px 10px 0 0; /* Закругляем верхние углы */
 }
-
+button, a, .clickable-element {
+    -webkit-tap-highlight-color: transparent;
+}
         .menu-bar {
             position: fixed;
             bottom: -100px;
@@ -399,8 +398,8 @@ function openAdminMenu() {
             let deltaY = event.clientY - centerY;
             
             // Рассчитываем угол наклона в зависимости от направления клика
-            let angleX = (deltaY / rect.height) * 100; // Наклон по оси X
-            let angleY = (deltaX / rect.width) * -100; // Наклон по оси Y (отрицательный, чтобы сохранять естественное движение)
+            let angleX = (deltaY / rect.height) * 150; // Наклон по оси X
+            let angleY = (deltaX / rect.width) * -150; // Наклон по оси Y (отрицательный, чтобы сохранять естественное движение)
             
             // Применяем эффект наклона к изображению
             hamster.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
