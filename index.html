@@ -109,7 +109,23 @@ button, a, .clickable-element {
 .upgrade-button {
     flex-grow: 1; /* Кнопки улучшений занимают все доступное место */
 }
+#achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
 
+.achievement {
+    padding: -10px;
+    border: 1px solid gold;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+}
+
+.achievement.unlocked {
+    border-color: green;
+}
 .buy-max {
     flex-grow: 0;
     width: 333px; /* Фиксированная ширина для кнопок "Купить максимум" */
@@ -195,6 +211,10 @@ button, a, .clickable-element {
         <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Тапать монетку</h1>
         <img src="https://i.imgur.com/VPkPPzf.png" alt="Hamster" class="hamster" id="hamster">
     </div>
+  <div class="container hidden" id="achievementsMenu">
+    <h2 style="color: white;">Достижения</h2>
+    <div id="achievements-list"></div>
+</div>
   <div id="adminMenu" class="hidden" style="
     position: fixed; 
     top: 50%; left: 50%; 
@@ -230,6 +250,7 @@ button, a, .clickable-element {
         <button class="menu-button" onclick="showMenu('upgradeMenu')">Улучшения</button>
         <button class="menu-button" onclick="showMenu('magazMenu')">Магазин</button>
         <button class="menu-button" onclick="showMenu('liderMenu')">Таблица Лидеров</button>
+        <button class="menu-button" onclick="showMenu('achievementsMenu')">Достижения</button>
         <button class="menu-button" onclick="showMenu('profilMenu')">Профиль</button>
     </div>
   <div class="container hidden" id="liderMenu">
@@ -266,16 +287,104 @@ const backgrounds = [
 
 let currentSkin = "default";
 let currentBackground = "default";
+          const achievements = [
+    {
+        id: "novice",
+        name: "Новичок",
+        description: "Собери 1000 очков",
+        goal: 1000,
+        unlocked: false
+    },
+    {
+        id: "magnate",
+        name: "Магнат",
+        description: "Собери 1,000,000 очков",
+        goal: 1000000,
+        unlocked: false
+    },
+    {
+        id: "clicker-pro",
+        name: "Кликер-профи",
+        description: "Сделай 1000 кликов",
+        goal: 1000,
+        unlocked: false
+    },
+    {
+        id: "upgrade-master",
+        name: "Мастер улучшений",
+        description: "Купи 10 улучшений",
+        goal: 10,
+        unlocked: false
+    },
+    {
+        id: "passive-income",
+        name: "Пассивный доход",
+        description: "Достигни пассивного дохода 100 очков в секунду",
+        goal: 100,
+        unlocked: false
+    }
+];
+          let totalClicks = 0; // Счётчик кликов
+let totalUpgrades = 0; // Счётчик улучшений
+
+function checkAchievements() {
+    achievements.forEach(achievement => {
+        if (!achievement.unlocked) {
+            let conditionMet = false;
+
+            // Проверяем условие для каждого достижения
+            switch (achievement.id) {
+                case "novice":
+                case "magnate":
+                    conditionMet = score >= achievement.goal;
+                    break;
+                case "clicker-pro":
+                    conditionMet = totalClicks >= achievement.goal;
+                    break;
+                case "upgrade-master":
+                    conditionMet = totalUpgrades >= achievement.goal;
+                    break;
+                case "passive-income":
+                    conditionMet = passiveIncome >= achievement.goal;
+                    break;
+            }
+
+            // Если условие выполнено, разблокируем достижение
+            if (conditionMet) {
+                achievement.unlocked = true;
+                alert(`Достижение разблокировано: ${achievement.name}\n${achievement.description}`);
+            }
+        }
+    });
+}
+          function showAchievements() {
+    const achievementsList = document.getElementById("achievements-list");
+    achievementsList.innerHTML = "";
+
+    achievements.forEach(achievement => {
+        const achievementDiv = document.createElement("div");
+        achievementDiv.className = `achievement ${achievement.unlocked ? "unlocked" : ""}`;
+        achievementDiv.innerHTML = `
+            <h3>${achievement.name}</h3>
+            <p>${achievement.description}</p>
+            <p>Статус: ${achievement.unlocked ? "Разблокировано" : "Заблокировано"}</p>
+        `;
+        achievementsList.appendChild(achievementDiv);
+    });
+}
      
-        function updateDisplay() {
+       function updateDisplay() {
     document.getElementById("score").textContent = formatNumber(score);
     document.getElementById("click-value").textContent = formatNumber(clickValue);
     document.getElementById("passive-income").textContent = formatNumber(passiveIncome);
-    
+
     localStorage.setItem("score", score);
     localStorage.setItem("clickValue", clickValue);
     localStorage.setItem("passiveIncome", passiveIncome);
     localStorage.setItem("lastVisit", Date.now());
+
+    // Проверяем достижения
+    checkAchievements();
 }
 function createFallingHamster() {
             const hamster = document.createElement("img");
@@ -306,9 +415,10 @@ function closeAdminMenu() {
 }
         document.getElementById("hamster").addEventListener("click", () => {
     score += clickValue;
+    totalClicks++; // Увеличиваем счётчик кликов
     updateDisplay();
     createFallingHamster();
-          console.log("Клик по хомяку!"); // Проверка, что обработчик срабатывает
+    console.log("Клик по хомяку!");
     let hamster = event.target;
     let rect = hamster.getBoundingClientRect();
     let centerX = rect.left + rect.width / 2;
@@ -324,13 +434,23 @@ function closeAdminMenu() {
 });
 
 
-        document.getElementById("upgrade-click").addEventListener("click", () => {
-            if (score >= 10) {
-                score -= 10;
-                clickValue++;
-                updateDisplay();
-            }
-        });
+       document.getElementById("upgrade-click").addEventListener("click", () => {
+    if (score >= 10) {
+        score -= 10;
+        clickValue++;
+        totalUpgrades++; // Увеличиваем счётчик улучшений
+        updateDisplay();
+    }
+});
+
+document.getElementById("upgrade-passive").addEventListener("click", () => {
+    if (score >= 50) {
+        score -= 50;
+        passiveIncome++;
+        totalUpgrades++; // Увеличиваем счётчик улучшений
+        updateDisplay();
+    }
+});
 
         document.getElementById("buy-maxclick").addEventListener("click", () => {
     let maxUpgrades = Math.floor(score / 10); // Сколько раз можно купить улучшение
@@ -377,15 +497,6 @@ document.getElementById("buy-maxpass").addEventListener("click", () => {
     passiveIncome += maxUpgrades; // Добавляем улучшения пассивного дохода
     updateDisplay();
 });
-
-
-        document.getElementById("upgrade-passive").addEventListener("click", () => {
-            if (score >= 50) {
-                score -= 50;
-                passiveIncome++;
-                updateDisplay();
-            }
-        });
 
         setInterval(() => {
             score += passiveIncome;
@@ -716,10 +827,14 @@ document.addEventListener("keydown", function (event) {
     if (selectedMenu) {
         selectedMenu.classList.remove("hidden");
     }
-
-    // Если открывается таблица лидеров, обновляем её
-    if (menuId === "liderMenu") {
+if (menuId === "liderMenu") {
         showLeaderboard();
+    } else if (menuId === "achievementsMenu") {
+        showAchievements();
+    }
+    // Если открывается таблица лидеров, обновляем её
+   if (menuId === "magazMenu") {
+        renderShop();
 
         const saveButton = document.getElementById('save-score-button');
         if (saveButton) {
@@ -727,12 +842,7 @@ document.addEventListener("keydown", function (event) {
         } else {
             console.error('Элемент save-score-button не найден');
         }
-    }
-
-    // Если открывается магазин, обновляем его
-    if (menuId === "magazMenu") {
-        renderShop();
-    }
+   }
 }
 
 function showAdminLogin() {
