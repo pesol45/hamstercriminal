@@ -66,12 +66,12 @@ button, a, .clickable-element {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px;
+    margin: 2px;
 }
 
 .shop-item img {
-    border-radius: 20px;
-    margin-bottom: 20px;
+    border-radius: 1px;
+    margin-bottom: 1px;
 }
        .menu-bar {
             position: fixed;
@@ -90,6 +90,12 @@ button, a, .clickable-element {
     justify-content: center;
     align-items: center;
     gap: 15px;
+}
+      .shop-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
       .buy-max {
     font-size: 15px;
@@ -308,11 +314,11 @@ button, a, .clickable-element {
     <h2 style="color: white;">Магазин</h2>
     <div>
         <h3 style="color: white;">Скины для хомяка</h3>
-        <div id="skins-container" class="upgrade-row"></div>
+        <div id="skins-container" class="shop-row"></div>
     </div>
     <div>
         <h3 style="color: white;">Фоны</h3>
-        <div id="backgrounds-container" class="upgrade-row"></div>
+        <div id="backgrounds-container" class="shop-row"></div>
     </div>
 </div>
     <div class="container" id="mainMenu">
@@ -507,7 +513,7 @@ function showAchievements() {
         progressFill.style.width = `${(achievement.progress / achievement.goal) * 100}%`;
         progressFill.style.height = "100%";
         progressFill.style.backgroundColor = achievement.unlocked ? "green" : "gold";
-        progressFill.style.borderRadius = "5px";
+        progressFill.style.borderRadius = "5px";style="width: 300px; height: 300px;"
 
         progressBar.appendChild(progressFill);
 
