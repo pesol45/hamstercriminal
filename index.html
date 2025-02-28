@@ -342,7 +342,46 @@ button, a, .clickable-element {
     <h2>Админ-меню</h2>
     <p>Добро пожаловать, Админ!</p>
     <button onclick="giveCoins()" style="padding: 10px; font-size: 16px; margin-bottom: 10px;">Выдать монеты</button>
+    <button onclick="showPoems()" style="padding: 10px; font-size: 16px; margin-bottom: 10px;">Стихи</button>
     <button onclick="closeAdminMenu()" style="padding: 10px; font-size: 16px;">Закрыть</button>
+</div>
+
+<!-- Модальное окно для стихов -->
+<div id="poemsModal" class="hidden" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 100000;
+    max-width: 80%;
+    overflow-y: auto;">
+    <h2>Выберите стих</h2>
+    <button onclick="showPoem('parus')" style="padding: 10px; font-size: 16px; margin: 10px;">Парус</button>
+    <button onclick="showPoem('proshay')" style="padding: 10px; font-size: 16px; margin: 10px;">Прощай, немытая Россия</button>
+    <button onclick="closePoemsModal()" style="padding: 10px; font-size: 16px; margin-top: 20px;">Закрыть</button>
+</div>
+
+<!-- Окно для отображения стиха -->
+<div id="poemContent" class="hidden" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 100000;
+    max-width: 80%;
+    overflow-y: auto;">
+    <pre id="poemText" style="white-space: pre-wrap; font-family: Arial, sans-serif;"></pre>
+    <button onclick="closePoem()" style="padding: 10px; font-size: 16px; margin-top: 20px;">Закрыть</button>
 </div>
 <div id="custom-notification" class="hidden">
     <div class="notification-content">
@@ -541,6 +580,59 @@ function showAchievements() {
     // Проверяем достижения
     checkAchievements();
 }
+          // Стихи
+const poems = {
+  parus: `
+    Белеет парус одинокой
+    В тумане моря голубом!..
+    Что ищет он в стране далекой?
+    Что кинул он в краю родном?..
+
+    Играют волны — ветер свищет,
+    И мачта гнется и скрыпит…
+    Увы! он счастия не ищет
+    И не от счастия бежит!
+
+    Под ним струя светлей лазури,
+    Над ним луч солнца золотой…
+    А он, мятежный, просит бури,
+    Как будто в бурях есть покой!
+  `,
+  proshay: `
+    Прощай, немытая Россия,
+    Страна рабов, страна господ,
+    И вы, мундиры голубые,
+    И ты, им преданный народ.
+
+    Быть может, за стеной Кавказа
+    Сокроюсь от твоих пашей,
+    От их всевидящего глаза,
+    От их всеслышащих ушей.
+  `
+};
+
+// Функция для открытия модального окна со стихами
+function showPoems() {
+  document.getElementById("poemsModal").classList.remove("hidden");
+}
+
+// Функция для закрытия модального окна со стихами
+function closePoemsModal() {
+  document.getElementById("poemsModal").classList.add("hidden");
+}
+
+// Функция для отображения выбранного стиха
+function showPoem(poemKey) {
+  const poemText = document.getElementById("poemText");
+  poemText.textContent = poems[poemKey];
+  document.getElementById("poemContent").classList.remove("hidden");
+  closePoemsModal(); // Закрываем окно выбора стихов
+}
+
+// Функция для закрытия окна с текстом стиха
+function closePoem() {
+  document.getElementById("poemContent").classList.add("hidden");
+}
 function showNotification(message) {
     const notification = document.getElementById("custom-notification");
     const notificationMessage = document.getElementById("notification-message");
@@ -700,6 +792,8 @@ document.getElementById("buy-maxpass").addEventListener("click", () => {
         }
 function formatNumber(num) {
     const suffixes = [
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "Vt" },
+        { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "NoDe" },
         { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "OcDe" },
         { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "SpDe" },
         { value: 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000, suffix: "SxDe" },
