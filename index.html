@@ -110,31 +110,27 @@ button, a, .clickable-element {
     flex-grow: 1; /* Кнопки улучшений занимают все доступное место */
 }
 #achievements-list {
-  display: flex;
-  flex-direction: row; /* Меняем направление на горизонтальное */
-  gap: 5px; /* Расстояние между элементами */
-  max-width: 100%; /* Ограничиваем ширину контейнера */
-  overflow-x: auto; /* Горизонтальная прокрутка */
-  overflow-y: hidden; /* Отключаем вертикальную прокрутку */
-  padding: 10px;
-  white-space: nowrap; /* Запрещаем перенос элементов на новую строку */
-}
-      @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-      #custom-notification {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 90%;
-    height: 90%;
-    background-color: rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: 5px; /* Уменьшаем расстояние между достижениями */
+    max-height: 300px; /* Ограничиваем высоту контейнера */
+    overflow-y: auto; /* Добавляем вертикальную прокрутку */
+    padding: 10px;
+}
+#custom-notification {
+    position: fixed;
+    top: -150px; /* Начальное положение за пределами экрана */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px; /* Фиксированная ширина */
+    background-color: #1c1b1b;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     z-index: 10000000;
-        animation: fadeIn 0.4s ease-in-out;
+    animation: slideIn 0.5s ease-in-out forwards;
+    cursor: pointer; /* Курсор в виде указателя */
 }
 
 #custom-notification.hidden {
@@ -142,38 +138,62 @@ button, a, .clickable-element {
 }
 
 .notification-content {
-    background-color: #1c1b1b;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    max-width: 300px;
+    position: relative;
 }
 
 .notification-content h2 {
     color: gold;
     font-size: 24px;
-    margin-bottom: 10px;
+    margin: 0; /* Убираем отступы у заголовка */
 }
 
 .notification-content p {
     color: white;
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-.notification-content button {
+/* Полоска таймера */
+.notification-timer {
+    position: absolute;
+    bottom: 10;
+    left: 0;
+    width: 100%;
+    height: 9px;
+    background-color: #444;
+    border-radius: 10px 10px 10px 10px;
+    overflow: hidden;
+}
+
+.notification-timer-fill {
+    height: 100%;
+    width: 100%;
     background-color: gold;
-    color: black;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+    animation: timer 5s linear forwards;
 }
 
-.notification-content button:hover {
-    background-color: #ffcc00;
+/* Анимация появления */
+@keyframes slideIn {
+    from { top: -150px; }
+    to { top: 20px; } /* Останавливаем уведомление на 20px от верхнего края */
+}
+
+/* Анимация уменьшения и исчезновения */
+@keyframes shrinkAndFadeOut {
+    from {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Анимация полоски таймера */
+@keyframes timer {
+    from { width: 100%; }
+    to { width: 0%; }
 }
 .achievement {
     padding: 8px;
@@ -318,11 +338,13 @@ button, a, .clickable-element {
     <button onclick="giveCoins()" style="padding: 10px; font-size: 16px; margin-bottom: 10px;">Выдать монеты</button>
     <button onclick="closeAdminMenu()" style="padding: 10px; font-size: 16px;">Закрыть</button>
 </div>
-  <div id="custom-notification" class="hidden">
+<div id="custom-notification" class="hidden">
     <div class="notification-content">
         <h2>Достижение разблокировано!</h2>
         <p id="notification-message"></p>
-        <button onclick="closeNotification()">Закрыть</button>
+        <div class="notification-timer">
+            <div class="notification-timer-fill"></div>
+        </div>
     </div>
 </div>
     <div class="container hidden upgrade-menu" id="upgradeMenu">
@@ -513,19 +535,37 @@ function showAchievements() {
     // Проверяем достижения
     checkAchievements();
 }
-          // Функция для отображения уведомления
 function showNotification(message) {
     const notification = document.getElementById("custom-notification");
     const notificationMessage = document.getElementById("notification-message");
 
-    notificationMessage.textContent = message; // Устанавливаем текст уведомления
-    notification.classList.remove("hidden"); // Показываем уведомление
+    // Устанавливаем текст уведомления
+    notificationMessage.textContent = message;
+
+    // Показываем уведомление
+    notification.classList.remove("hidden");
+
+    // Закрываем уведомление при нажатии на него
+    notification.addEventListener("click", () => {
+        // Добавляем анимацию уменьшения и исчезновения
+        notification.style.animation = "shrinkAndFadeOut 0.9s ease-in-out forwards";
+
+        // Скрываем уведомление после завершения анимации
+        setTimeout(() => {
+            notification.classList.add("hidden");
+            notification.style.animation = ""; // Сбрасываем анимацию
+        }, 3000); // Время анимации
+    }, { once: true });
+
+    // Автоматически скрываем уведомление через 5 секунд
+    setTimeout(() => {
+        closeNotification();
+    }, 5000);
 }
 
-// Функция для скрытия уведомления
 function closeNotification() {
     const notification = document.getElementById("custom-notification");
-    notification.classList.add("hidden"); // Скрываем уведомление
+    notification.classList.add("hidden");
 }
 function createFallingHamster() {
             const hamster = document.createElement("img");
