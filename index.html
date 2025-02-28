@@ -533,54 +533,54 @@ function checkAchievements() {
         showAchievements();
     }
 }
-          let currentPoem = ""; // Текущий стих
+ let currentPoem = ""; // Текущий стих
 let currentLineIndex = 0; // Индекс текущей строки
 let poemLines = []; // Массив строк стиха
 
 // Функция для начала изучения стиха
 function startLearning() {
-  // Разбиваем стих на строки
-  poemLines = currentPoem.split("\n").filter(line => line.trim() !== "");
-  currentLineIndex = 0;
+    // Разбиваем стих на строки
+    poemLines = currentPoem.split("\n").filter(line => line.trim() !== "");
+    currentLineIndex = 0;
 
-  // Показываем первую строку
-  showNextLine();
+    // Показываем первую строку
+    showNextLine();
 }
 
 // Функция для отображения следующей строки
 function showNextLine() {
-  if (currentLineIndex >= poemLines.length) {
-    alert("Вы выучили стих!");
-    closePoem();
-    return;
-  }
+    if (currentLineIndex >= poemLines.length) {
+        alert("Вы выучили стих!");
+        closePoem();
+        return;
+    }
 
-  const currentLine = poemLines[currentLineIndex];
-  const userInput = prompt(`Повторите строку:\n${removePunctuation(currentLine)}`);
+    const currentLine = poemLines[currentLineIndex];
+    const userInput = prompt(`Повторите строку:\n${removePunctuation(currentLine)}`);
 
-  if (userInput && removePunctuation(userInput) === removePunctuation(currentLine)) {
-    // Если пользователь правильно повторил строку
-    currentLineIndex++;
-    showNextLine(); // Переходим к следующей строке
-  } else {
-    // Если пользователь ошибся
-    alert("Неверно! Попробуйте ещё раз.");
-    showNextLine(); // Повторяем текущую строку
-  }
+    if (userInput && removePunctuation(userInput) === removePunctuation(currentLine)) {
+        // Если пользователь правильно повторил строку
+        currentLineIndex++;
+        showNextLine(); // Переходим к следующей строке
+    } else {
+        // Если пользователь ошибся
+        alert("Неверно! Попробуйте ещё раз.");
+        showNextLine(); // Повторяем текущую строку
+    }
 }
 
 // Функция для удаления знаков препинания
 function removePunctuation(text) {
-  return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
+    return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
 }
 
 // Функция для отображения выбранного стиха
 function showPoem(poemKey) {
-  currentPoem = poems[poemKey]; // Сохраняем выбранный стих
-  const poemText = document.getElementById("poemText");
-  poemText.textContent = currentPoem;
-  document.getElementById("poemContent").classList.remove("hidden");
-  closePoemsModal(); // Закрываем окно выбора стихов
+    currentPoem = poems[poemKey]; // Сохраняем выбранный стих
+    const poemText = document.getElementById("poemText");
+    poemText.textContent = currentPoem;
+    document.getElementById("poemContent").classList.remove("hidden");
+    closePoemsModal(); // Закрываем окно выбора стихов
 }
 function showAchievements() {
     const achievementsList = document.getElementById("achievements-list");
